@@ -22,4 +22,13 @@ const findUser = {
   }
 };
 
-export { createUser, findUser };
+const updateUser = {
+  id: {
+    notEmpty: true,
+    isMongoId: {
+      errorMessage: 'Invalid id'
+    }
+  }
+};
+
+export { createUser, findUser, updateUser };

@@ -44,4 +44,37 @@ const create = (req, res) => {
     .catch(error => res.status(400).json({ status: 'error', error: error.message }));
 };
 
-export default { list, create, getUser };
+const update = (req, res) => {
+  // The password can't be updated by this method for security reasons
+  // the user must always ask for a reset email
+  if (req.body.password) {
+    res.status(400).json({ status: 'error', error: { msg: 'You can´t change the password with this endpoint' } });
+    return;
+  } else if (req.body.email || (!req.body.firstName && !req.body.lastName)) {
+    res.status(400).json({ status: 'error', error: { msg: 'Wrong request' } });
+    return;
+  }
+  // Check if the user exist
+  User.get(req.params.id)
+    .then((user) => {
+      if (!user) {
+        res.status(400).json({ status: 'error', error: { msg: 'User not found' } });
+      } else {
+        const updatedUser = {
+          'profile.firstName': req.body.firstName || user.profile.firstName,
+          'profile.lastName': req.body.lastName || user.profile.lastName
+        };
+        User.update({ _id: req.params.id }, { $set: updatedUser })
+        .exec()
+        .then(() => {
+          res.status(200).json({ status: 'ok', message: 'User updated' });
+        })
+        .catch(() => {
+          res.status(500).json({ status: 'error', message: 'Could no fullfill the request' });
+        });
+      }
+    })
+    .catch(error => res.status(500).json({ status: 'error', error }));
+};
+
+export default { list, create, getUser, update };

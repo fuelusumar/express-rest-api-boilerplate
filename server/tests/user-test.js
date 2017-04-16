@@ -69,6 +69,23 @@ describe('User endopoints', () => {
       .catch(error => done(error));
     });
   });
-  it('should update a SINGLE user on /user/:id PUT');
-  it('should delete a SINGLE user on /user/:id DELETE');
+  it('should update a SINGLE user on /user/:id PUT', (done) => {
+    User.findOne({}, (errorFindUser, user) => {
+      if (errorFindUser) {
+        done(errorFindUser);
+      }
+      request(app)
+      .put(`/api/user/${user._id}`)
+      .send({ firstName: 'John', lastName: 'Doe' })
+      .expect(200)
+      .then((res) => {
+        expect(res.body).to.have.property('status');
+        expect(res.body.status).to.be.equal('ok');
+        expect(res.body).to.have.property('message');
+        expect(res.body.message).to.be.equal('User updated');
+        done();
+      })
+      .catch(error => done(error));
+    });
+  });
 });
