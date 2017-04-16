@@ -66,3 +66,5 @@ conn.once('open', () => {
     debugApp(`Server running at http://127.0.0.1:${apiPort}/`);
   });
 });
+
+export default app;

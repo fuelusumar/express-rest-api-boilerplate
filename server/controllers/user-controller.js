@@ -1,5 +1,18 @@
 import User from '../models/user-model';
 
+
+const getUser = (req, res) => {
+  User.get(req.params.id)
+    .then((user) => {
+      if (!user) {
+        res.status(200).json({ status: 'ok', message: 'User not found' });
+      } else {
+        res.status(200).json({ status: 'ok', user });
+      }
+    })
+    .catch(error => res.status(500).json({ status: 'error', error }));
+};
+
 const list = (req, res) => {
   // const { limit = 50, skip = 0 } = req.query;
   User.list({})
@@ -31,4 +44,4 @@ const create = (req, res) => {
     .catch(error => res.status(400).json({ status: 'error', error: error.message }));
 };
 
-export default { list, create };
+export default { list, create, getUser };

@@ -4,7 +4,9 @@ const validateRequest = schema => (req, res, next) => {
   req.getValidationResult()
       .then((result) => {
         if (!result.isEmpty()) {
-          result.throw(result.array);
+          res.status(400).json({ status: 'error', error: result.mapped() });
+          return;
+          // result.throw(result.array);
         }
         next();
       })

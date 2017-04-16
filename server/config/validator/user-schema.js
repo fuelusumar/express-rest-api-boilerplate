@@ -13,4 +13,13 @@ const createUser = {
   },
 };
 
-export default createUser;
+const findUser = {
+  id: {
+    notEmpty: true,
+    isMongoId: {
+      errorMessage: 'Invalid id'
+    }
+  }
+};
+
+export { createUser, findUser };

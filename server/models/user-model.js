@@ -64,8 +64,24 @@ userSchema.pre('save', function (next) { // eslint-disable-line func-names
  * Statics
  */
 userSchema.statics = {
+
   /**
-   * Get user
+   * Get user by email
+   * @param {ObjectId} id - The objectId of user.
+   * @returns {Promise<User, APIError>}
+   */
+  get(id) {
+    return this.findById(id)
+      .select({ password: 0, __v: 0 }) // always filter the password field
+      .exec()
+      .then(user => user)
+      .catch((error) => {
+        throw error;
+      });
+  },
+
+  /**
+   * Get user by email
    * @param {ObjectId} id - The objectId of user.
    * @returns {Promise<User, APIError>}
    */
@@ -87,7 +103,7 @@ userSchema.statics = {
    */
   list({ skip = 0, limit = 50 } = {}) {
     return this.find({})
-      .select({ password: 0 }) // always filter the password field
+      .select({ password: 0, __v: 0 }) // always filter the password field
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
